@@ -9,7 +9,7 @@ class AccountsController < ApplicationController
   def create
     @account = User.new(params[:user])
     if @account.save
-      flash[:notice] = "Registered your new account! If you like you can fill out some contact info now, otherwise feel free to explore the site."
+      flash[:notice] = "Registered your new account! Please provide your First Name, Last Name and E-mail."
       redirect_to edit_contact_path(@account.contact_id)
     else
       render :action => :new
