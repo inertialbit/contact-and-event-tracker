@@ -67,12 +67,19 @@ class FileAttachmentsController < ApplicationController
     
     def update
       @file_attachment = FileAttachment.find(params[:id])
-      if @file_attachment.update_attributes(params[:file_attachment])
-        flash[:notice] = "Updated File: #{@file_attachment.name}"
-        redirect_to_index_or_event
-      else
-        flash[:warning] = "The description could not be saved, please try again."
-        render :edit
+      respond_to do |format|
+        if @file_attachment.update_attributes(params[:file_attachment])
+          format.html do
+            flash[:notice] = "Updated File: #{@file_attachment.name}"
+            redirect_to_index_or_event
+          end
+        else
+          format.html do
+            flash.now[:warning] = "The description could not be saved, please try again."
+            render :edit
+          end
+        end
+        format.js
       end
     end
     

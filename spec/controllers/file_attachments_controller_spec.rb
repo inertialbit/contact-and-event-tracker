@@ -1,6 +1,10 @@
 require 'spec_helper'
 
 describe FileAttachmentsController do
+  def flash_now 
+    controller.instance_eval{flash.stub!(:sweep)} 
+  end
+  
   def mock_event(stubs={})
     @mock_event ||= mock_model(Event, stubs)
   end
@@ -213,7 +217,7 @@ describe FileAttachmentsController do
       put :update, :id => 1
       assigns[:file_attachment].should == @mock_file_attachment
     end
-    
+  
     it "updates the file attachment" do
       @mock_file_attachment.should_receive(:update_attributes).with({
         'description' => 'some lovely new description',
@@ -226,41 +230,49 @@ describe FileAttachmentsController do
         :name => 'slightly.modified.txt'
       }
     end
+  
+    context "update succeeds (std HTML POST:)" do
     
-    context "update succeeds :)" do
-      
       before(:each) do
         @mock_file_attachment.stub(:update_attributes).and_return(true)
       end
-      
+    
       it "sets a flash[:notice]" do
         put :update, :id => 1
         flash[:notice].should_not be_nil
       end
-      
+    
       it "redirects to index or event for file" do
         put :update, :id => 1
         response.should redirect_to(event_path(mock_event.id))
       end
-      
-    end
     
-    context "update fails :(" do
-      
+    end
+  
+    context "update fails (std HTML POST):" do
+    
       before(:each) do
+        flash_now
         @mock_file_attachment.stub(:update_attributes).and_return(false)
       end
-      
+    
       it "sets a flash[:warning]" do
         put :update, :id => 1
         flash[:warning].should_not be_nil
       end
-      
+    
       it "renders the edit template" do
         put :update, :id => 1
         response.should render_template('file_attachments/edit')
       end
       
+    end
+    
+    context "xhr POST" do
+      it "renders the update template" do
+        xhr :put, :update, :id => 1
+        response.should render_template("file_attachments/update")
+      end
     end
     
   end

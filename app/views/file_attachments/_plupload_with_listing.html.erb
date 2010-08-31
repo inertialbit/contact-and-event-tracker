@@ -84,8 +84,8 @@
   <h4>Upload Files<hr /></h4>
 
   <p>
-  <%= link_to_unless params[:std] == '1', "One at a time", url_for(:controller => controller_name, :action => action_name, :std => 1), :class => 'fake_button' %>
-  <%= link_to_if params[:std] == '1', "Several at once", url_for(:controller => controller_name, :action => action_name, :std => 0), :class => 'fake_button' %>
+    <%= link_to_unless params[:std] == '1', "One at a time", url_for(:controller => controller_name, :action => action_name, :std => 1), :class => 'fake_button' %>
+    <%= link_to_if params[:std] == '1', "Several at once", url_for(:controller => controller_name, :action => action_name, :std => 0), :class => 'fake_button' %>
   </p>
 
   <% if params[:std] && params[:std] == '1' %>
